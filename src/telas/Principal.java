@@ -10,7 +10,7 @@ public class Principal {
 		// TODO Auto-generated method stub
 
 		Calculadora calc = new Calculadora(15);
-		calc.multiplicar(12, 2);
+		calc.multiplicar(800, 10);
 	}
 
 }

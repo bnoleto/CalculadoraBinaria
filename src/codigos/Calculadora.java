@@ -10,9 +10,6 @@ public class Calculadora {
 	private ArrayList<Character> resultado;
 	int precisao;
 	
-	
-	
-	
 	public Calculadora(int precisao){
 		this.precisao = precisao;
 		for(int i =0; i<precisao; i++)
@@ -96,6 +93,7 @@ public class Calculadora {
 	}
 	
 	private void deslocar(List<Character> Q) {
+		System.out.println(C_A);
 		Character a_para_q = C_A.get(C_A.size()-1);
 		C_A.add(0,'0');
 		Q.add(0, a_para_q);
@@ -125,16 +123,17 @@ public class Calculadora {
 		for(int i = 0 ; i<precisao; i++) {
 			if(Q.get(Q.size()-1) == '1') {
 				C_A = adicao(C_A, M);
+				deslocar(Q);
 			}
 			else {
 				deslocar(Q);
 			}
 		}
 		
-		
+		/*
 		for(int i=0;i<C_A.size(); i++)
 			System.out.print(C_A.get(i));
-		
+		*/
 		for(int i=0;i<Q.size(); i++)
 			System.out.print(Q.get(i));
 		
