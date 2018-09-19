@@ -1,7 +1,9 @@
 package codigos;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JLabel;
 
 public class Calculadora {
 	private ArrayList<Character> multiplicando_bin;
@@ -9,9 +11,18 @@ public class Calculadora {
 	private ArrayList<Character> C_A = new ArrayList<Character>();
 	private ArrayList<Character> resultado = new ArrayList<Character>();
 	int precisao;
+	boolean[] flag_mult = {true,true};
+	
+	private JLabel label_multis;
+	private JLabel label_resultado;
 	
 	public Calculadora(int qtd_bits){
 		this.precisao = qtd_bits-1;
+	}
+	
+	public void set_labels(JLabel multis, JLabel resultado) {
+		this.label_multis = multis;
+		this.label_resultado = resultado;
 	}
 	
 	public void alterar_limite_bits(int valor) {
@@ -27,16 +38,29 @@ public class Calculadora {
 			resultado.add('0');
 		}
 		C_A.add(0,'0');
+		for(int i = 0; i<1000; i++)
+			System.out.println("");
 	}
 	
-	private ArrayList<Character> converter_para_binario(int numero){
+	private ArrayList<Character> converter_para_binario(int numero, int flag){
 		ArrayList<Character> numero_binario = new ArrayList<Character>();
 		
 		int quociente = Math.abs(numero);
 		
 		// impedirá a conversão caso o número inserido estoure o limite de 15 bits
 		if(quociente >= Math.pow(2, precisao)) {
-			return null;
+			flag_mult[flag] = false;
+			String erro = "ERRO: O número " + numero + " excede o limite de "+ String.valueOf(precisao) + " bits!";
+			System.out.println(erro);
+			label_multis.setForeground(Color.RED);
+			label_multis.setText(erro);
+			for(int i = 0; i < precisao+1 ; i++) {
+				
+				numero_binario.add(0, '0');
+			}
+			return numero_binario;
+		} else {
+			flag_mult[flag] = true;
 		}
 		
 		// dividirá o número sucessivamente por 2 e armazenará o resto na pilha
@@ -136,22 +160,36 @@ public class Calculadora {
 	public String multiplicar(int multiplicando, int multiplicador){
 		
 		reset();
-		
+		/*
 		// caso 1 dos números seja zero
 		if(multiplicador == 0 || multiplicando == 0) {
 			resultado.add(0, '0');	// bit de sinal
 			return converter_para_string(resultado);
-		}
+		}*/
 		
-		multiplicando_bin = converter_para_binario(multiplicando);
-		multiplicador_bin = converter_para_binario(multiplicador);
+		multiplicando_bin = converter_para_binario(multiplicando, 0);
+		multiplicador_bin = converter_para_binario(multiplicador, 1);
+		
+		if(!flag_mult[0] && !flag_mult[1]) {
+			label_multis.setForeground(Color.RED);
+			label_multis.setText("Os números inseridos excedem o limite de "+ String.valueOf(precisao) + " bits!");
+		} else if (!flag_mult[0]) {
+			label_multis.setForeground(Color.RED);
+			String erro = "ERRO: O número " + multiplicando + " excede o limite de "+ String.valueOf(precisao) + " bits!";
+			label_multis.setText(erro);
+		} else if (!flag_mult[1]) {
+			label_multis.setForeground(Color.RED);
+			String erro = "ERRO: O número " + multiplicador + " excede o limite de "+ String.valueOf(precisao) + " bits!";
+			label_multis.setText(erro);
+		} else {
+			label_multis.setForeground(Color.BLACK);
+			label_multis.setText("Ok!");
+		}
 		
 		// impedirá de realizar os cálculos caso algum dos valores extrapole o limite de bits
 		if(multiplicador_bin == null || multiplicando_bin == null) {
 			return "ERRO: O número inserido excede o limite de "+ String.valueOf(precisao) + " bits!";
 		}
-		
-		
 		
 		ArrayList<Character> M = new ArrayList<Character>();
 		for(int i = 1; i< multiplicando_bin.size(); i++)
@@ -194,10 +232,44 @@ public class Calculadora {
 		}
 		
 		if(resultado.size() > precisao+1) {
+			label_resultado.setForeground(Color.RED);
 			System.out.println("ATENÇÃO: O resultado excede o limite de "+ (precisao+1) + " bits!");
+			label_resultado.setText("ATENÇÃO: O resultado excede o limite de "+ (precisao+1) + " bits!");
+		} else {
+			label_resultado.setForeground(Color.BLUE);
+			label_resultado.setText(converter_para_decimal(resultado) +  " (base 10)");
 		}
 		
 		return converter_para_string(resultado);
+	}
+	
+	private String converter_para_decimal(ArrayList<Character> resultado2) {
+		int resultado = 0;
+		for(int i = 1; i < resultado2.size(); i++) {
+			resultado += Integer.parseInt(resultado2.get(i).toString())*Math.pow(2, resultado2.size()-1-i);
+		}
+		if(resultado2.get(0) == '1') {
+			resultado *= -1; 
+		}
+		return String.valueOf(resultado);
+	}
+
+	public String get_binario(int numero){
+		String valor = "";
+		
+		ArrayList<Character> selecionado = null;
+		
+		if(numero == 0) {
+			selecionado = multiplicando_bin;
+		}
+		if(numero == 1) {
+			selecionado = multiplicador_bin;
+		}
+		
+		for(int i = 0; i<selecionado.size(); i++) {
+			valor += selecionado.get(i);
+		}
+		return valor;
 	}
 	
 }

@@ -4,6 +4,9 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import com.jgoodies.forms.layout.FormLayout;
+
+import codigos.Calculadora;
+
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 
 import javax.swing.JLabel;
@@ -25,18 +28,29 @@ import java.awt.SystemColor;
 import java.awt.Component;
 import javax.swing.Box;
 import javax.swing.ListSelectionModel;
+import java.awt.event.InputMethodListener;
+import java.awt.event.InputMethodEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import javax.swing.event.CaretListener;
+import javax.swing.event.CaretEvent;
 
 @SuppressWarnings("serial")
 public class Gui extends JPanel{
 
 	private JFrame frmMultiplicadorBinrio;
-	private JTextField textField;
-	private JTextField textField_1;
+	private JTextField tf_multiplicando;
+	private JTextField tf_multiplicador;
 	private JLabel lblResultado;
 	private JTable tab_label_bits;
 	private JTable tab_multis;
-	private Component verticalStrut;
-	private JTable tab_multis_decimal;
+	private JLabel verticalStrut;
+	private JTable tab_label_bits2;
+	private JTable tab_resultado;
+	private Component verticalStrut_1;
+	private Component verticalStrut_2;
+	private JLabel lblNewLabel;
+	private Calculadora calc = new Calculadora(16);
 
 	/**
 	 * Launch the application.
@@ -57,6 +71,29 @@ public class Gui extends JPanel{
 	/**
 	 * Create the application.
 	 */
+	
+	public void atualizar_tabelas() {
+
+		calc.set_labels(verticalStrut, lblNewLabel);
+		
+		int multiplicador = (tf_multiplicando.getText().isEmpty() || (tf_multiplicando.getText().length() == 1 && tf_multiplicando.getText().charAt(0) == '-')) ? 0 : Integer.parseInt(tf_multiplicando.getText());
+		int multiplicando = (tf_multiplicador.getText().isEmpty() || (tf_multiplicador.getText().length() == 1 && tf_multiplicador.getText().charAt(0) == '-')) ? 0 : Integer.parseInt(tf_multiplicador.getText());
+		
+		String resultado = calc.multiplicar(multiplicador, multiplicando);
+		
+		//atualizará o multiplicando
+		for(int i = 0; i<tab_multis.getModel().getColumnCount(); i++)
+		tab_multis.getModel().setValueAt(calc.get_binario(0).charAt(i), 0, i);
+		
+		//atualizará o multiplicador
+		for(int i = 0; i<tab_multis.getModel().getColumnCount(); i++)
+		tab_multis.getModel().setValueAt(calc.get_binario(1).charAt(i), 1, i);
+		
+		//atualizará o resultado
+		for(int i = 0; i<tab_multis.getModel().getColumnCount(); i++)
+		tab_resultado.getModel().setValueAt(resultado.charAt(i), 0, i);
+		
+	}
 	
 	private DefaultTableModel funcoes_tabela(String[][] linhas, String[] colunas) {
 		String[] nomes_colunas = colunas;
@@ -124,7 +161,11 @@ public class Gui extends JPanel{
 	 */
 	@SuppressWarnings("serial")
 	private void initialize() {
+		
+		calc.set_labels(verticalStrut, lblNewLabel);
+		
 		frmMultiplicadorBinrio = new JFrame();
+		frmMultiplicadorBinrio.getContentPane().setBackground(SystemColor.control);
 		frmMultiplicadorBinrio.setTitle("Multiplicador Bin\u00E1rio - Bruno Noleto");
 		frmMultiplicadorBinrio.setResizable(false);
 		frmMultiplicadorBinrio.setBounds(100, 100, 640, 480);
@@ -136,34 +177,66 @@ public class Gui extends JPanel{
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		frmMultiplicadorBinrio.getContentPane().setLayout(gridBagLayout);
 		
-		JLabel lblMultiplicador = new JLabel("Multiplicador");
-		GridBagConstraints gbc_lblMultiplicador = new GridBagConstraints();
-		gbc_lblMultiplicador.gridwidth = 2;
-		gbc_lblMultiplicador.fill = GridBagConstraints.HORIZONTAL;
-		gbc_lblMultiplicador.insets = new Insets(0, 0, 5, 5);
-		gbc_lblMultiplicador.gridx = 1;
-		gbc_lblMultiplicador.gridy = 1;
-		frmMultiplicadorBinrio.getContentPane().add(lblMultiplicador, gbc_lblMultiplicador);
+		verticalStrut_2 = Box.createVerticalStrut(30);
+		GridBagConstraints gbc_verticalStrut_2 = new GridBagConstraints();
+		gbc_verticalStrut_2.insets = new Insets(0, 0, 5, 5);
+		gbc_verticalStrut_2.gridx = 1;
+		gbc_verticalStrut_2.gridy = 0;
+		frmMultiplicadorBinrio.getContentPane().add(verticalStrut_2, gbc_verticalStrut_2);
 		
-		JLabel lblMultiplicando = new JLabel("Multiplicando");
-		GridBagConstraints gbc_lblMultiplicando = new GridBagConstraints();
-		gbc_lblMultiplicando.gridwidth = 2;
-		gbc_lblMultiplicando.anchor = GridBagConstraints.WEST;
-		gbc_lblMultiplicando.insets = new Insets(0, 0, 5, 5);
-		gbc_lblMultiplicando.gridx = 6;
-		gbc_lblMultiplicando.gridy = 1;
-		frmMultiplicadorBinrio.getContentPane().add(lblMultiplicando, gbc_lblMultiplicando);
+		JLabel lbl_multiplicando = new JLabel("Multiplicando");
+		GridBagConstraints gbc_lbl_multiplicando = new GridBagConstraints();
+		gbc_lbl_multiplicando.gridwidth = 2;
+		gbc_lbl_multiplicando.fill = GridBagConstraints.HORIZONTAL;
+		gbc_lbl_multiplicando.insets = new Insets(0, 0, 5, 5);
+		gbc_lbl_multiplicando.gridx = 1;
+		gbc_lbl_multiplicando.gridy = 1;
+		frmMultiplicadorBinrio.getContentPane().add(lbl_multiplicando, gbc_lbl_multiplicando);
 		
-		textField = new JTextField();
-		textField.setFont(new Font("Tahoma", Font.PLAIN, 28));
-		GridBagConstraints gbc_textField = new GridBagConstraints();
-		gbc_textField.fill = GridBagConstraints.BOTH;
-		gbc_textField.gridwidth = 2;
-		gbc_textField.insets = new Insets(0, 0, 5, 5);
-		gbc_textField.gridx = 1;
-		gbc_textField.gridy = 2;
-		frmMultiplicadorBinrio.getContentPane().add(textField, gbc_textField);
-		textField.setColumns(10);
+		JLabel lbl_multiplicador = new JLabel("Multiplicador");
+		GridBagConstraints gbc_lbl_multiplicador = new GridBagConstraints();
+		gbc_lbl_multiplicador.gridwidth = 2;
+		gbc_lbl_multiplicador.anchor = GridBagConstraints.WEST;
+		gbc_lbl_multiplicador.insets = new Insets(0, 0, 5, 5);
+		gbc_lbl_multiplicador.gridx = 6;
+		gbc_lbl_multiplicador.gridy = 1;
+		frmMultiplicadorBinrio.getContentPane().add(lbl_multiplicador, gbc_lbl_multiplicador);
+		
+		tf_multiplicando = new JTextField();
+		tf_multiplicando.setHorizontalAlignment(SwingConstants.CENTER);
+		tf_multiplicando.addCaretListener(new CaretListener() {
+			public void caretUpdate(CaretEvent e) {
+				atualizar_tabelas();
+			}
+		});
+		tf_multiplicando.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				JTextField caixa = (JTextField) arg0.getSource();
+				
+				if((caixa.getText().length() > 0 && caixa.getText().charAt(0) == '-' && arg0.getKeyChar() == '-') ||
+						//caixa.getCaretPosition() != 0 && arg0.getKeyChar() == '-' ||
+						(!Character.isDigit(arg0.getKeyChar()) && arg0.getKeyChar() != '-') ||
+						caixa.getText().length() > 6) {
+					arg0.consume();
+					return;
+				}
+				if(arg0.getKeyChar() == '-') {
+					caixa.setText("-"+caixa.getText());
+					arg0.consume();
+				}
+				atualizar_tabelas();
+			}
+		});
+		tf_multiplicando.setFont(new Font("Tahoma", Font.PLAIN, 28));
+		GridBagConstraints gbc_tf_multiplicando = new GridBagConstraints();
+		gbc_tf_multiplicando.fill = GridBagConstraints.BOTH;
+		gbc_tf_multiplicando.gridwidth = 2;
+		gbc_tf_multiplicando.insets = new Insets(0, 0, 5, 5);
+		gbc_tf_multiplicando.gridx = 1;
+		gbc_tf_multiplicando.gridy = 2;
+		frmMultiplicadorBinrio.getContentPane().add(tf_multiplicando, gbc_tf_multiplicando);
+		tf_multiplicando.setColumns(10);
 		
 		JLabel lblX = new JLabel("x");
 		lblX.setHorizontalAlignment(SwingConstants.CENTER);
@@ -175,19 +248,45 @@ public class Gui extends JPanel{
 		gbc_lblX.gridy = 2;
 		frmMultiplicadorBinrio.getContentPane().add(lblX, gbc_lblX);
 		
-		textField_1 = new JTextField();
-		textField_1.setFont(new Font("Tahoma", Font.PLAIN, 28));
-		GridBagConstraints gbc_textField_1 = new GridBagConstraints();
-		gbc_textField_1.gridwidth = 2;
-		gbc_textField_1.fill = GridBagConstraints.BOTH;
-		gbc_textField_1.insets = new Insets(0, 0, 5, 5);
-		gbc_textField_1.gridx = 6;
-		gbc_textField_1.gridy = 2;
-		frmMultiplicadorBinrio.getContentPane().add(textField_1, gbc_textField_1);
-		textField_1.setColumns(10);
+		tf_multiplicador = new JTextField();
+		tf_multiplicador.setHorizontalAlignment(SwingConstants.CENTER);
+		tf_multiplicador.addCaretListener(new CaretListener() {
+			public void caretUpdate(CaretEvent arg0) {
+				atualizar_tabelas();
+			}
+		});
+		tf_multiplicador.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				JTextField caixa = (JTextField) arg0.getSource();
+				
+				if((caixa.getText().length() > 0 && caixa.getText().charAt(0) == '-' && arg0.getKeyChar() == '-') ||
+				//		caixa.getCaretPosition() != 0 && arg0.getKeyChar() == '-' ||
+						(!Character.isDigit(arg0.getKeyChar()) && arg0.getKeyChar() != '-') ||
+						caixa.getText().length() > 6) {
+					arg0.consume();
+					return;
+				}
+				if(arg0.getKeyChar() == '-') {
+					caixa.setText("-"+caixa.getText());
+					arg0.consume();
+				}
+				atualizar_tabelas();
+			}
+		});
+		tf_multiplicador.setFont(new Font("Tahoma", Font.PLAIN, 28));
+		GridBagConstraints gbc_tf_multiplicador = new GridBagConstraints();
+		gbc_tf_multiplicador.gridwidth = 2;
+		gbc_tf_multiplicador.fill = GridBagConstraints.BOTH;
+		gbc_tf_multiplicador.insets = new Insets(0, 0, 5, 5);
+		gbc_tf_multiplicador.gridx = 6;
+		gbc_tf_multiplicador.gridy = 2;
+		frmMultiplicadorBinrio.getContentPane().add(tf_multiplicador, gbc_tf_multiplicador);
+		tf_multiplicador.setColumns(10);
 		
-		verticalStrut = Box.createVerticalStrut(20);
+		verticalStrut = new JLabel("Ok!");
 		GridBagConstraints gbc_verticalStrut = new GridBagConstraints();
+		gbc_verticalStrut.gridwidth = 7;
 		gbc_verticalStrut.insets = new Insets(0, 0, 5, 5);
 		gbc_verticalStrut.gridx = 1;
 		gbc_verticalStrut.gridy = 6;
@@ -247,6 +346,7 @@ public class Gui extends JPanel{
 		        return renderCenter;
 		    }
 		};
+		tab_multis.setEnabled(false);
 		tab_multis.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tab_multis.setBackground(SystemColor.control);
 		tab_multis.setShowGrid(false);
@@ -264,7 +364,7 @@ public class Gui extends JPanel{
 		gbc_tab_multis.gridy = 5;
 		frmMultiplicadorBinrio.getContentPane().add(tab_multis, gbc_tab_multis);
 		
-		tab_multis_decimal = new JTable() {
+		tab_label_bits2 = new JTable() {
 		    DefaultTableCellRenderer renderCenter = new DefaultTableCellRenderer();
 
 		    { // initializer block
@@ -277,21 +377,74 @@ public class Gui extends JPanel{
 		        return renderCenter;
 		    }
 		};
-		tab_multis_decimal.setEnabled(false);
-		tab_multis_decimal.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		tab_multis_decimal.setBackground(SystemColor.control);
-		tab_multis_decimal.setShowGrid(false);
-		tab_multis_decimal.setShowHorizontalLines(false);
-		tab_multis_decimal.setShowVerticalLines(false);
-		tab_multis_decimal.setRowHeight(30);
-		tab_multis_decimal.setModel(novaTabela(2, 1));
-		for(int i = 0; i<tab_multis_decimal.getModel().getColumnCount(); i++)
-			tab_multis_decimal.getColumnModel().getColumn(i).setResizable(false);
-		GridBagConstraints gbc_tab_multis_decimal = new GridBagConstraints();
-		gbc_tab_multis_decimal.insets = new Insets(0, 0, 5, 5);
-		gbc_tab_multis_decimal.gridx = 8;
-		gbc_tab_multis_decimal.gridy = 5;
-		frmMultiplicadorBinrio.getContentPane().add(tab_multis_decimal, gbc_tab_multis_decimal);
+		tab_label_bits2.setEnabled(false);
+		tab_label_bits2.setFont(new Font("Tahoma", Font.BOLD, 11));
+		tab_label_bits2.setBackground(SystemColor.control);
+		tab_label_bits2.setShowGrid(false);
+		tab_label_bits2.setShowHorizontalLines(false);
+		tab_label_bits2.setShowVerticalLines(false);
+		tab_label_bits2.setRowSelectionAllowed(false);
+		tab_label_bits2.setRowHeight(30);
+		String[][] label_bits2 = {{"S", "15", "14", "13", "12", "11", "10", "9", "8", "7", "6", "5", "4", "3", "2", "1"}};
+		tab_label_bits2.setModel(novaTabela(label_bits2));
+		for(int i = 0; i<16; i++)
+		tab_label_bits2.getColumnModel().getColumn(i).setResizable(false);
+		
+		verticalStrut_1 = Box.createVerticalStrut(20);
+		GridBagConstraints gbc_verticalStrut_1 = new GridBagConstraints();
+		gbc_verticalStrut_1.insets = new Insets(0, 0, 5, 5);
+		gbc_verticalStrut_1.gridx = 1;
+		gbc_verticalStrut_1.gridy = 8;
+		frmMultiplicadorBinrio.getContentPane().add(verticalStrut_1, gbc_verticalStrut_1);
+		GridBagConstraints gbc_tab_label_bits2 = new GridBagConstraints();
+		gbc_tab_label_bits2.fill = GridBagConstraints.BOTH;
+		gbc_tab_label_bits2.insets = new Insets(0, 0, 5, 5);
+		gbc_tab_label_bits2.gridwidth = 7;
+		gbc_tab_label_bits2.gridx = 1;
+		gbc_tab_label_bits2.gridy = 9;
+		frmMultiplicadorBinrio.getContentPane().add(tab_label_bits2, gbc_tab_label_bits2);
+		
+		tab_resultado = new JTable() {
+		    DefaultTableCellRenderer renderCenter = new DefaultTableCellRenderer();
+
+		    { // initializer block
+		    	renderCenter.setHorizontalAlignment(SwingConstants.CENTER);
+		    	renderCenter.setVerticalAlignment(SwingConstants.TOP);
+		    }
+
+		    @Override
+		    public TableCellRenderer getCellRenderer (int arg0, int arg1) {
+		        return renderCenter;
+		    }
+		};
+		tab_resultado.setEnabled(false);
+		tab_resultado.setForeground(SystemColor.textHighlight);
+		tab_resultado.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		tab_resultado.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		tab_resultado.setBackground(SystemColor.control);
+		tab_resultado.setShowGrid(false);
+		tab_resultado.setShowHorizontalLines(false);
+		tab_resultado.setShowVerticalLines(false);
+		tab_resultado.setRowHeight(30);
+		tab_resultado.setModel(novaTabela(1,16));
+		for(int i = 0; i<16; i++)
+		tab_resultado.getColumnModel().getColumn(i).setResizable(false);
+		GridBagConstraints gbc_tab_resultado = new GridBagConstraints();
+		gbc_tab_resultado.fill = GridBagConstraints.BOTH;
+		gbc_tab_resultado.insets = new Insets(0, 0, 5, 5);
+		gbc_tab_resultado.gridwidth = 7;
+		gbc_tab_resultado.gridx = 1;
+		gbc_tab_resultado.gridy = 10;
+		frmMultiplicadorBinrio.getContentPane().add(tab_resultado, gbc_tab_resultado);
+		
+		lblNewLabel = new JLabel("0 (base 10)");
+		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
+		gbc_lblNewLabel.gridwidth = 7;
+		gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel.gridx = 1;
+		gbc_lblNewLabel.gridy = 11;
+		frmMultiplicadorBinrio.getContentPane().add(lblNewLabel, gbc_lblNewLabel);
+		
 	}
 
 }
