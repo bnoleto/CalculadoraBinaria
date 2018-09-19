@@ -3,11 +3,8 @@ package telas;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
-import com.jgoodies.forms.layout.FormLayout;
 
 import codigos.Calculadora;
-
-import com.jgoodies.forms.builder.DefaultFormBuilder;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -28,16 +25,18 @@ import java.awt.SystemColor;
 import java.awt.Component;
 import javax.swing.Box;
 import javax.swing.ListSelectionModel;
-import java.awt.event.InputMethodListener;
-import java.awt.event.InputMethodEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.CaretEvent;
 
-@SuppressWarnings("serial")
+
 public class Gui extends JPanel{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JFrame frmMultiplicadorBinrio;
 	private JTextField tf_multiplicando;
 	private JTextField tf_multiplicador;
@@ -118,6 +117,10 @@ public class Gui extends JPanel{
 				valor_linhas,
 				nomes_colunas
 					) {
+				/**
+						 * 
+						 */
+						private static final long serialVersionUID = 1L;
 				boolean[] columnEditables = colunas_editaveis;
 				public boolean isCellEditable(int row, int column) {
 					return columnEditables[column];
@@ -159,7 +162,6 @@ public class Gui extends JPanel{
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	@SuppressWarnings("serial")
 	private void initialize() {
 		
 		calc.set_labels(verticalStrut, lblNewLabel);
@@ -217,7 +219,8 @@ public class Gui extends JPanel{
 				if((caixa.getText().length() > 0 && caixa.getText().charAt(0) == '-' && arg0.getKeyChar() == '-') ||
 						//caixa.getCaretPosition() != 0 && arg0.getKeyChar() == '-' ||
 						(!Character.isDigit(arg0.getKeyChar()) && arg0.getKeyChar() != '-') ||
-						caixa.getText().length() > 6) {
+						caixa.getText().length() > 6 ||
+						caixa.getText().contains("-") && Character.isDigit(arg0.getKeyChar()) && caixa.getCaretPosition() == 0) {
 					arg0.consume();
 					return;
 				}
@@ -263,7 +266,9 @@ public class Gui extends JPanel{
 				if((caixa.getText().length() > 0 && caixa.getText().charAt(0) == '-' && arg0.getKeyChar() == '-') ||
 				//		caixa.getCaretPosition() != 0 && arg0.getKeyChar() == '-' ||
 						(!Character.isDigit(arg0.getKeyChar()) && arg0.getKeyChar() != '-') ||
-						caixa.getText().length() > 6) {
+						caixa.getText().length() > 6 ||
+						caixa.getText().contains("-") && Character.isDigit(arg0.getKeyChar()) && caixa.getCaretPosition() == 0
+						) {
 					arg0.consume();
 					return;
 				}
@@ -301,7 +306,11 @@ public class Gui extends JPanel{
 		frmMultiplicadorBinrio.getContentPane().add(lblResultado, gbc_lblResultado);
 		
 		tab_label_bits = new JTable() {
-		    DefaultTableCellRenderer renderCenter = new DefaultTableCellRenderer();
+		    /**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+			DefaultTableCellRenderer renderCenter = new DefaultTableCellRenderer();
 
 		    { // initializer block
 		    	renderCenter.setHorizontalAlignment(SwingConstants.CENTER);
@@ -334,7 +343,11 @@ public class Gui extends JPanel{
 		frmMultiplicadorBinrio.getContentPane().add(tab_label_bits, gbc_tab_label_bits);
 		
 		tab_multis = new JTable() {
-		    DefaultTableCellRenderer renderCenter = new DefaultTableCellRenderer();
+		    /**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+			DefaultTableCellRenderer renderCenter = new DefaultTableCellRenderer();
 
 		    { // initializer block
 		    	renderCenter.setHorizontalAlignment(SwingConstants.CENTER);
@@ -365,7 +378,11 @@ public class Gui extends JPanel{
 		frmMultiplicadorBinrio.getContentPane().add(tab_multis, gbc_tab_multis);
 		
 		tab_label_bits2 = new JTable() {
-		    DefaultTableCellRenderer renderCenter = new DefaultTableCellRenderer();
+		    /**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+			DefaultTableCellRenderer renderCenter = new DefaultTableCellRenderer();
 
 		    { // initializer block
 		    	renderCenter.setHorizontalAlignment(SwingConstants.CENTER);
@@ -405,7 +422,11 @@ public class Gui extends JPanel{
 		frmMultiplicadorBinrio.getContentPane().add(tab_label_bits2, gbc_tab_label_bits2);
 		
 		tab_resultado = new JTable() {
-		    DefaultTableCellRenderer renderCenter = new DefaultTableCellRenderer();
+		    /**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+			DefaultTableCellRenderer renderCenter = new DefaultTableCellRenderer();
 
 		    { // initializer block
 		    	renderCenter.setHorizontalAlignment(SwingConstants.CENTER);
