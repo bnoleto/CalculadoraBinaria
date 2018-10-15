@@ -129,8 +129,6 @@ public class Calculadora {
 	}
 	
 	private void deslocar(List<Character> Q) {
-		System.out.print(C_A);
-		System.out.print(Q);
 		Character a_para_q = C_A.get(C_A.size()-1);
 		C_A.add(0,'0');
 		Q.add(0, a_para_q);
@@ -201,15 +199,19 @@ public class Calculadora {
 		
 		System.out.println("[C,A][Q][M]");
 		
+		System.out.print(C_A);
+		System.out.print(Q);
+		System.out.println(M);
+		
 		// iterações principais para a multiplicação
 		for(int i = 0 ; i<precisao; i++) {
 			if(Q.get(Q.size()-1) == '1') {
 				C_A = adicao(C_A, M);
-				deslocar(Q);
 			}
-			else {
-				deslocar(Q);
-			}
+			deslocar(Q);
+			
+			System.out.print(C_A);
+			System.out.print(Q);
 			System.out.println(M);
 		}
 		
@@ -225,16 +227,18 @@ public class Calculadora {
 		
 		// adicionará o bit de sinal no bit mais à esquerda;
 		resultado.add(0, encontrar_bit_sinal(multiplicando, multiplicador));
-		
+		/*
 		// irá desconsiderar os zeros mais à esquerda (com exceção do bit de sinal) para ficar em conformidade com a qtd de bits
-		while(resultado.get(1) == '0' && resultado.size()>precisao+1) {
+		while(resultado.get(1) == '0' && resultado.size()>precisao*2+1) {
 			resultado.remove(1);
-		}
+		}*/
 		
-		if(resultado.size() > precisao+1) {
+		System.out.println(resultado);
+		
+		if(resultado.size() > (precisao+1)*2) {
 			label_resultado.setForeground(Color.RED);
-			System.out.println("ATENÇÃO: O resultado excede o limite de "+ (precisao+1) + " bits!");
-			label_resultado.setText("ATENÇÃO: O resultado excede o limite de "+ (precisao+1) + " bits!");
+			System.out.println("ATENÇÃO: O resultado excede o limite de "+ (precisao*2+1) + " bits!");
+			label_resultado.setText("ATENÇÃO: O resultado excede o limite de "+ (precisao*2+1) + " bits!");
 		} else {
 			label_resultado.setForeground(Color.BLUE);
 			label_resultado.setText(converter_para_decimal(resultado) +  " (base 10)");

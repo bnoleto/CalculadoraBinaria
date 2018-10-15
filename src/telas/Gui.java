@@ -395,16 +395,20 @@ public class Gui extends JPanel{
 		    }
 		};
 		tab_label_bits2.setEnabled(false);
-		tab_label_bits2.setFont(new Font("Tahoma", Font.BOLD, 11));
+		tab_label_bits2.setFont(new Font("Tahoma", Font.BOLD, 8));
 		tab_label_bits2.setBackground(SystemColor.control);
 		tab_label_bits2.setShowGrid(false);
 		tab_label_bits2.setShowHorizontalLines(false);
 		tab_label_bits2.setShowVerticalLines(false);
 		tab_label_bits2.setRowSelectionAllowed(false);
 		tab_label_bits2.setRowHeight(30);
-		String[][] label_bits2 = {{"S", "15", "14", "13", "12", "11", "10", "9", "8", "7", "6", "5", "4", "3", "2", "1"}};
+		
+		String[][] label_bits2 = {
+				{"S","30","29","28","27","26","25","24","23","22","21","20","19","18","17","16", "15", "14", "13", "12", "11", "10", "9", "8", "7", "6", "5", "4", "3", "2", "1"}
+				};
+		
 		tab_label_bits2.setModel(novaTabela(label_bits2));
-		for(int i = 0; i<16; i++)
+		for(int i = 0; i<31; i++)
 		tab_label_bits2.getColumnModel().getColumn(i).setResizable(false);
 		
 		verticalStrut_1 = Box.createVerticalStrut(20);
@@ -440,15 +444,15 @@ public class Gui extends JPanel{
 		};
 		tab_resultado.setEnabled(false);
 		tab_resultado.setForeground(SystemColor.textHighlight);
-		tab_resultado.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		tab_resultado.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		tab_resultado.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tab_resultado.setBackground(SystemColor.control);
 		tab_resultado.setShowGrid(false);
 		tab_resultado.setShowHorizontalLines(false);
 		tab_resultado.setShowVerticalLines(false);
 		tab_resultado.setRowHeight(30);
-		tab_resultado.setModel(novaTabela(1,16));
-		for(int i = 0; i<16; i++)
+		tab_resultado.setModel(novaTabela(1,31));
+		for(int i = 0; i<31; i++)
 		tab_resultado.getColumnModel().getColumn(i).setResizable(false);
 		GridBagConstraints gbc_tab_resultado = new GridBagConstraints();
 		gbc_tab_resultado.fill = GridBagConstraints.BOTH;
