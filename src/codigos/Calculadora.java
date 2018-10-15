@@ -233,6 +233,8 @@ public class Calculadora {
 			resultado.remove(1);
 		}*/
 		
+		resultado.remove(1);
+		
 		System.out.println(resultado);
 		
 		if(resultado.size() > (precisao+1)*2) {

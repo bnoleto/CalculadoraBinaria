@@ -89,7 +89,7 @@ public class Gui extends JPanel{
 		tab_multis.getModel().setValueAt(calc.get_binario(1).charAt(i), 1, i);
 		
 		//atualizará o resultado
-		for(int i = 0; i<tab_multis.getModel().getColumnCount(); i++)
+		for(int i = 0; i<tab_resultado.getModel().getColumnCount(); i++)
 		tab_resultado.getModel().setValueAt(resultado.charAt(i), 0, i);
 		
 	}
